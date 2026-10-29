@@ -1,80 +1,124 @@
 # NETWORKWALKS-MURTALLIS-B084A-WK1-PM1-CYBERSECURITY-LAB-SETUP
 WK1-PM1-CYBERSECURITY-LAB-SETUP
 
-Step 1: Create and Configure the NAT Network in VirtualBox
-To ensure all target and attacking machines can talk to each other on the 10.0.0.0/24 subnet while maintaining Internet access, we use a VirtualBox NAT Network.
-	Open VirtualBox.
-	Go to Tools (top menu or main panel) → Network → NAT Networks.
-	Click Create (or +).
-	Configure the NAT Network details:
-	Network Name: LabNetwork 
-	Network CIDR: 10.0.0.0/24
-	Enable DHCP: Checked (optional, but convenient)
-	Supports IPv6: Unchecked (optional)
-	Click Apply.
-  
-Step 2: Create the Kali Linux Virtual Machine
-	In VirtualBox, click New.
-	Set the following parameters:
-	Name: Kali-Linux
-	Folder: Choose your preferred VM installation folder.
-	ISO Image: Select the downloaded Kali Linux ISO file.
-	Type: Linux
-	Version: Debian (64-bit)
-	Hardware Resources:
-	RAM: Minimum 2048 MB (4096 MB recommended).
-	Processors: At least 2 CPUs.
-	Hard Disk:
-	Disk Size: Minimum 20 GB to 30 GB dynamically allocated.
-	Click Finish.
+# 🛡️ Virtual Cybersecurity & Penetration Testing Lab Setup
+
+## 📌 Project Overview
+This project focuses on setting up a hands-on virtual cybersecurity and penetration testing lab using **VirtualBox** and **Kali Linux**. 
+
+The goal of this lab is to establish a safe, isolated, and repeatable environment for testing security tools, running network scans, performing reconnaissance, and executing vulnerability assessments. 
+
+By building this on a private virtual network, we can easily attach target machines later to simulate real-world attacks and defense scenarios safely.
 
 
-Step 3: Configure VM Settings (Clipboard, Shared Folder, Network)
-Before starting the installation, configure the VM settings as specified:
-1. Clipboard & Drag and Drop
-	Select the Kali-Linux VM and click Settings.
-	Navigate to General → Advanced.
-	Set Shared Clipboard to Bidirectional.
-	Set Drag'n'Drop to Bidirectional.
+🎯 Objectives
+* Install and configure VirtualBox as our main hypervisor.
+* Import and set up Kali Linux as the primary workstation.
+* Build a isolated NAT Network for secure inter-VM communication.
+* Configure network interfaces and assign a predictable, static IP to Kali Linux.
+* Test and verify internet connectivity and internal DNS resolution.
+* Take a clean baseline snapshot for instant recovery.
+* Document the complete setup process and troubleshooting steps for future reference.
 
-3. Network Configuration
-	Go to the Network tab in Settings.
-	Under Adapter 1:
-	Attached to: Select NAT Network.
-	Name: Choose LabNetwork (the network created in Step 1).
-	Expand Advanced:
-	Promiscuous Mode: Allow All or Allow VMs.
 
-5. Shared Folders Setup
-	Go to the Shared Folders tab.
-	Click the Add Shared Folder icon (+).
-	Set the following:
-	Folder Path: Select or enter your host's downloads folder path (e.g., C:\Users\<YourUsername>\Downloads on Windows or /home/<user>/Downloads on Linux/macOS).
-	Folder Name: downloads
-	Auto-mount: Checked
-	Make Permanent: Checked
-	Mount point: /mnt/downloads (or leave blank to automatically mount under /media/sf_downloads).
-	Click OK.
 
-Step 4: Install Kali Linux
-	Start the VM and select Graphical Install.
-	Choose your preferred Language, Location, and Keyboard Layout.
-	Hostname & Domain: Set hostname as kali (domain can be left blank).
-	User Setup: Create a default non-root user (e.g., username kali, with your password).
-	Partitioning: Select Guided - use entire disk, then All files in one partition.
-	Complete the installation and reboot when prompted.
+🛡️ Purpose of the Lab
+This laboratory provides a controlled environment for cybersecurity learning, experimentation, and ethical security testing. 
 
-Step 5: Configure Static IP Address (10.0.0.2/24)
-Once logged into Kali Linux, set the static IP address:
-Option A: Via NetworkManager GUI (Recommended)
-	Click the Network icon in the top-right panel → Edit Connections...
-	Select Wired connection 1 and click the gear icon (Settings).
-	Go to the IPv4 Settings tab:
-	Method: Select Manual.
-	Click Add under Addresses:
-	Address: 10.0.0.2
-	Netmask: 255.255.255.0 (or 24)
-	Gateway: 10.0.0.1
-	DNS Servers: 10.0.0.1, 8.8.8.8
-	Click Save and re-enable the connection.
+Key use cases for this environment include:
+* Network reconnaissance & mapping
+* Port scanning with Nmap
+* Vulnerability scanning and assessment
+* Network packet analysis
+* Web application security testing
+* Exploitation and post-exploitation practice
+* Hands-on practice with security tools
 
+
+⚙️ Lab Configuration
+
+| 🧩 Component | ⚙️ Configuration |
+| :--- | :--- |
+| **🖥️ Host OS** | Windows 10 |
+| **🧠 Host RAM** | 16 GB |
+| **⚡ Processor** | Intel Core i7 |
+| **🧰 Hypervisor** | VirtualBox 7.2 |
+| **🐉 Security OS** | Kali Linux 2026.2 |
+| **🧠 Kali RAM** | 2048 MB |
+| **🌐 Virtual Network** | NAT Network |
+| **📡 Network Address** | 10.0.0.0/24 |
+| **🐧 Kali IP Address** | 10.0.0.2/24 |
+| **🚪 Default Gateway** | 10.0.0.1 |
+| **🌍 DNS Server** | 10.0.0.1 |
+| **🔮 Target VM Range** | 10.0.0.3 – 10.0.0.99 |
+
+---
+
+## 🪜 Cybersecurity Lab Setup Procedure
+
+### Step 1. Install Prerequisites
+First, install **7-Zip** to extract compressed archive files (such as `.7z` virtual machine images). Next, download and install **VirtualBox** to manage our virtual infrastructure.
+* [7-Zip Download](https://7-zip.org/download.html)
+* [VirtualBox Download](https://virtualbox.org/wiki/Downloads)
+
+### Step 2. Create the NAT Network
+Rather than using standard NAT (which isolates virtual machines from one another), create a dedicated **NAT Network**. This allows VMs to talk directly to each other while still routing outbound internet traffic.
+
+In VirtualBox, navigate to **Tools > Network > NAT Networks** and configure:
+* **Network Name:** `NatNetwork`
+* **IPv4 Prefix:** `10.0.0.0/24`
+* **DHCP:** Enabled
+* **IPv6:** Disabled
+
+### Step 3. Import Kali Linux
+Download the pre-built Kali Linux virtual machine from the official website and import it into VirtualBox. 
+
+Under the VM's **Network Settings**, configure:
+* **Adapter 1:** Attached to `NAT Network`
+* **Name:** `NatNetwork`
+* **Adapter Type:** `Intel PRO/1000 MT Desktop`
+
+Allocate **2048 MB RAM** and set up a shared folder if you plan on transferring files easily between your host OS and Kali Linux.
+
+### Step 4. Configure Static Network Settings in Kali
+To keep things predictable during future lab exercises, set a static IPv4 address inside Kali Linux:
+* Open **Network Connections** in Kali and edit **Wired connection 1**.
+* Change the IPv4 method to **Manual**.
+* Assign the following parameters:
+  * **IP Address:** `10.0.0.2`
+  * **Netmask:** `24` (or `255.255.255.0`)
+  * **Gateway:** `10.0.0.1`
+  * **DNS:** `10.0.0.1`
+
+### Step 5. Take a Baseline Snapshot
+Once Kali is running smoothly with network access, shut it down or pause it, then take a VirtualBox snapshot.
+* **Snapshot Name:** `Clean Kali - Network Setup`
+
+> 💡 **Why this matters:** This snapshot gives us a known-good recovery point. If a future exploit, test, or misconfiguration breaks the system, we can restore it to this exact state in seconds.
+
+---
+
+## 🔎 Verification & Testing
+
+To confirm everything was set up properly, run the following verification checks:
+
+| Test | Command | Expected Result |
+| :--- | :--- | :--- |
+| **Check IP Assignment** | `ip a` | Displays assigned IP (`10.0.0.2/24`) |
+| **Test Gateway Ping** | `ping -c 4 10.0.0.1` | 0% packet loss |
+| **Test Internet Ping** | `ping -c 4 8.8.8.8` | Successful replies from Google DNS |
+| **Test DNS Resolution** | `nslookup networkwalks.com` | Resolves domain name to IP |
+| **Verify Nmap Setup** | `nmap --version` | Outputs installed Nmap version |
+
+---
+
+## 🐞 Challenges & Troubleshooting
+
+### Issue: Internet Unreachable After Setting Static IP
+After switching Kali Linux to a manual/static IP address, internet connectivity stopped working even though local gateway pings were passing.
+
+**Root Cause & Fix:**
+This happens when duplicate address detection times out during startup. We resolved this by modifying the connection profile directly via `nmcli`:
+
+```bash
+sudo nmcli connection modify "Wired connection 1" ipv4.dad-timeout 0
